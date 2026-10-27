@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Universal App Locker</string>
-    <string name="accessibility_description">Tracks which app is in the foreground to enforce your chosen daily limits.</string>
+    <string name="accessibility_description">কোন অ্যাপ সামনে খোলা আছে তা দেখে আপনার ঠিক করা দৈনিক সময়সীমা প্রয়োগ করে। কোনো ব্যক্তিগত তথ্য পড়া বা সংরক্ষণ করা হয় না।</string>
 </resources>
