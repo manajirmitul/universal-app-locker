@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Universal App Locker</string>
+    <string name="accessibility_description">Tracks which app is in the foreground to enforce your chosen daily limits.</string>
+</resources>
