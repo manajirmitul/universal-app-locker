@@ -1,6 +1,7 @@
 package com.example.universalapplocker
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -10,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import android.widget.TextView
 import android.widget.Toast
 
 class LockActivity : Activity() {
@@ -21,6 +21,10 @@ class LockActivity : Activity() {
 
     private lateinit var store: Store
     private var pkg: String = ""
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,33 +129,29 @@ class LockActivity : Activity() {
         val limit = store.getLimit(pkg)
         header(
             content,
-            "সময় শেষ!",
-            "${appLabel()} অ্যাপের আজকের সীমা (${Ui.fmtMin(limit.toLong())}) শেষ হয়েছে।"
+            getString(R.string.lock_title),
+            getString(R.string.lock_sub, appLabel(), Ui.fmtMin(this, limit.toLong()))
         )
 
         if (store.hasPin()) {
             val pad = PinPadView(this)
-            pad.showInfo("আরও সময় পেতে PIN দিন")
+            pad.showInfo(getString(R.string.lock_pin_info))
             pad.onSubmit = { entered ->
                 if (store.tryPin(entered)) {
                     showOptions()
                 } else {
                     pad.clear()
-                    pad.showError(Ui.pinFailMessage(store))
+                    pad.showError(Ui.pinFailMessage(this, store))
                 }
             }
             content.addView(pad)
         } else {
-            val note = Ui.tv(
-                this,
-                "কোনো PIN সেট করা নেই। Universal App Locker খুলে একটি PIN সেট করুন।",
-                14f, Ui.WARN
-            )
+            val note = Ui.tv(this, getString(R.string.lock_no_pin), 14f, Ui.WARN)
             note.gravity = Gravity.CENTER
             content.addView(note)
         }
 
-        val home = Ui.btn(this, "হোম স্ক্রিনে যান", false) { goHome() }
+        val home = Ui.btn(this, getString(R.string.go_home), false) { goHome() }
         val hlp = LinearLayout.LayoutParams(dp(290), ViewGroup.LayoutParams.WRAP_CONTENT)
         hlp.topMargin = dp(14)
         content.addView(home, hlp)
@@ -161,17 +161,17 @@ class LockActivity : Activity() {
 
     private fun showOptions() {
         val content = LinearLayout(this)
-        header(content, "আনলক হয়েছে", "${appLabel()} কতক্ষণের জন্য খুলতে চান?")
-
-        val options = listOf(
-            Pair("আরও ৫ মিনিট", 5),
-            Pair("আরও ১৫ মিনিট", 15),
-            Pair("আরও ৩০ মিনিট", 30)
+        header(
+            content,
+            getString(R.string.unlocked_title),
+            getString(R.string.unlocked_sub, appLabel())
         )
-        for (o in options) {
-            val b = Ui.btn(this, o.first, false) {
-                store.grantMore(pkg, o.second * 60L)
-                Toast.makeText(this, "${o.first} দেওয়া হয়েছে", Toast.LENGTH_SHORT).show()
+
+        val minutesList = listOf(5, 15, 30)
+        for (m in minutesList) {
+            val b = Ui.btn(this, getString(R.string.plus_minutes, m), false) {
+                store.grantMore(pkg, m * 60L)
+                Toast.makeText(this, getString(R.string.granted_toast), Toast.LENGTH_SHORT).show()
                 finish()
             }
             val lp = LinearLayout.LayoutParams(dp(290), ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -179,16 +179,16 @@ class LockActivity : Activity() {
             content.addView(b, lp)
         }
 
-        val all = Ui.btn(this, "আজকের জন্য সম্পূর্ণ আনলক", true) {
+        val all = Ui.btn(this, getString(R.string.unlock_today), true) {
             store.setFree(pkg)
-            Toast.makeText(this, "আজকের জন্য আনলক হয়েছে", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.unlock_today_toast), Toast.LENGTH_SHORT).show()
             finish()
         }
         val alp = LinearLayout.LayoutParams(dp(290), ViewGroup.LayoutParams.WRAP_CONTENT)
         alp.topMargin = dp(10)
         content.addView(all, alp)
 
-        val home = Ui.btn(this, "বাদ দিন, হোমে যান", false, true) { goHome() }
+        val home = Ui.btn(this, getString(R.string.skip_home), false, true) { goHome() }
         val hlp = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
         )

@@ -35,6 +35,7 @@ Go to the **[Releases](../../releases/latest)** page and download the latest `Un
 - PIN is stored as a salted SHA-256 hash; 5 wrong tries = 30 s cooldown
 - Optional **Usage Access** makes counting more accurate by including usage before the service started
 - Dark UI, app search, progress bars
+- **Languages:** English and বাংলা, switch anytime with the 🌐 button (or follow the phone language). To add a language, copy `app/src/main/res/values/strings.xml` to `values-xx/strings.xml`, translate it, and add the language to the list in `MainActivity.showLanguageDialog()`
 
 ## Limitations
 

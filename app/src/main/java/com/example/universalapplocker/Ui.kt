@@ -93,19 +93,19 @@ object Ui {
         return t
     }
 
-    fun fmtMin(totalMinutes: Long): String {
+    fun fmtMin(ctx: Context, totalMinutes: Long): String {
         val h = totalMinutes / 60
         val m = totalMinutes % 60
         return when {
-            h > 0 && m > 0 -> "$h ঘ $m মি"
-            h > 0 -> "$h ঘ"
-            else -> "$m মি"
+            h > 0 && m > 0 -> ctx.getString(R.string.fmt_h_m, h, m)
+            h > 0 -> ctx.getString(R.string.fmt_h, h)
+            else -> ctx.getString(R.string.fmt_m, m)
         }
     }
 
-    fun pinFailMessage(store: Store): String {
+    fun pinFailMessage(ctx: Context, store: Store): String {
         val b = store.blockedSeconds()
-        return if (b > 0) "অনেকবার ভুল হয়েছে। $b সেকেন্ড পরে চেষ্টা করুন" else "ভুল PIN"
+        return if (b > 0) ctx.getString(R.string.pin_blocked, b) else ctx.getString(R.string.pin_wrong)
     }
 
     /** স্ট্যাটাস বার / নেভিগেশন বার / কিবোর্ডের জায়গা ছেড়ে কনটেন্ট সাজায়। */

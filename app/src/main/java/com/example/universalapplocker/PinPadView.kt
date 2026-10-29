@@ -87,7 +87,7 @@ class PinPadView(context: Context) : LinearLayout(context) {
             }
             "OK" -> {
                 if (pin.length < minLen) {
-                    showError("কমপক্ষে $minLen অঙ্ক দিন")
+                    showError(context.getString(R.string.pin_min_digits, minLen))
                 } else {
                     onSubmit?.invoke(pin.toString())
                 }

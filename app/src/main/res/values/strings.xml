@@ -1,4 +1,79 @@
 <resources>
     <string name="app_name">Universal App Locker</string>
-    <string name="accessibility_description">কোন অ্যাপ সামনে খোলা আছে তা দেখে আপনার ঠিক করা দৈনিক সময়সীমা প্রয়োগ করে। কোনো ব্যক্তিগত তথ্য পড়া বা সংরক্ষণ করা হয় না।</string>
+    <string name="accessibility_description">Detects which app is in the foreground and applies the daily time limits you set. No personal data is read or stored.</string>
+
+    <string name="lang_code">EN</string>
+    <string name="lang_title">Language</string>
+    <string name="lang_auto">Auto (phone language)</string>
+
+    <string name="btn_open">Open</string>
+    <string name="btn_set">Set</string>
+    <string name="btn_change">Change</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_save">Save</string>
+
+    <string name="fmt_h_m">%1$d h %2$d min</string>
+    <string name="fmt_h">%1$d h</string>
+    <string name="fmt_m">%1$d min</string>
+
+    <string name="main_subtitle">Set a daily time limit for each app</string>
+    <string name="search_hint">🔍  Search apps</string>
+    <string name="hero_on">🛡  Protection is on</string>
+    <string name="hero_on_count">%1$d app(s) have a daily limit</string>
+    <string name="hero_on_none">Pick an app from the list below to set a limit</string>
+    <string name="hero_off">⚠  Protection is off</string>
+    <string name="hero_off_sub">No app will be locked until you turn on Accessibility</string>
+
+    <string name="setup_title">Setup</string>
+    <string name="step1_title">1. Turn on Accessibility</string>
+    <string name="step1_desc">Locking does not work without it</string>
+    <string name="step2_title">2. Set a PIN</string>
+    <string name="step2_desc">4 to 8 digits</string>
+    <string name="step3_title">3. Allow unrestricted battery</string>
+    <string name="step3_desc">Otherwise the phone may stop the service</string>
+    <string name="step4_title">4. Usage Access (optional)</string>
+    <string name="step4_desc">For more accurate counting</string>
+    <string name="restricted_help">If you cannot turn on Accessibility: App info → ⋮ (three dots) → Allow restricted settings, then try again.</string>
+    <string name="open_app_info">Open app info</string>
+
+    <string name="list_title">Daily app limits</string>
+    <string name="list_hint">Tap any app to set its time limit</string>
+    <string name="active_count">%1$d active</string>
+    <string name="settings_open_failed">Could not open these settings</string>
+
+    <string name="gate_sub">Enter your PIN to continue</string>
+    <string name="need_pin_first">Set a PIN first</string>
+    <string name="pin_new_title">Enter a new PIN</string>
+    <string name="pin_new_sub">Choose a PIN of 4 to 8 digits</string>
+    <string name="pin_again_title">Enter it again</string>
+    <string name="pin_confirm_info">Enter the same PIN again to confirm</string>
+    <string name="pin_mismatch">The PINs did not match, try again</string>
+    <string name="pin_saved">PIN saved</string>
+    <string name="pin_min_digits">Enter at least %1$d digits</string>
+    <string name="pin_wrong">Wrong PIN</string>
+    <string name="pin_blocked">Too many wrong tries. Try again in %1$d seconds</string>
+
+    <string name="limit_label">Daily limit (in minutes)</string>
+    <string name="limit_hint">e.g. 30  (0 = off)</string>
+    <string name="preset_off">Off</string>
+    <string name="limit_set_toast">%1$s: daily limit set to %2$s</string>
+    <string name="limit_off_toast">%1$s: limit turned off</string>
+
+    <string name="row_no_limit">No limit</string>
+    <string name="row_set">Set</string>
+    <string name="row_used">Today %1$s / %2$s</string>
+    <string name="row_used_free">Used %1$s today • unlocked for today</string>
+
+    <string name="lock_title">Time is up!</string>
+    <string name="lock_sub">The daily limit for %1$s (%2$s) is over.</string>
+    <string name="lock_pin_info">Enter your PIN to get more time</string>
+    <string name="lock_no_pin">No PIN is set. Open Universal App Locker and set a PIN.</string>
+    <string name="go_home">Go to home screen</string>
+    <string name="unlocked_title">Unlocked</string>
+    <string name="unlocked_sub">How long do you want to open %1$s?</string>
+    <string name="plus_minutes">%1$d more minutes</string>
+    <string name="granted_toast">Extra time granted</string>
+    <string name="unlock_today">Fully unlock for today</string>
+    <string name="unlock_today_toast">Unlocked for today</string>
+    <string name="skip_home">Skip, go home</string>
 </resources>

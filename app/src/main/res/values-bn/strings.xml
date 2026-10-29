@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">Universal App Locker</string>
+    <string name="accessibility_description">কোন অ্যাপ সামনে খোলা আছে তা দেখে আপনার ঠিক করা দৈনিক সময়সীমা প্রয়োগ করে। কোনো ব্যক্তিগত তথ্য পড়া বা সংরক্ষণ করা হয় না।</string>
+
+    <string name="lang_code">বাং</string>
+    <string name="lang_title">ভাষা</string>
+    <string name="lang_auto">অটো (ফোনের ভাষা)</string>
+
+    <string name="btn_open">খুলুন</string>
+    <string name="btn_set">সেট করুন</string>
+    <string name="btn_change">পরিবর্তন</string>
+    <string name="btn_cancel">বাতিল</string>
+    <string name="btn_save">সংরক্ষণ</string>
+
+    <string name="fmt_h_m">%1$d ঘ %2$d মি</string>
+    <string name="fmt_h">%1$d ঘ</string>
+    <string name="fmt_m">%1$d মি</string>
+
+    <string name="main_subtitle">অ্যাপের দৈনিক ব্যবহারের সীমা ঠিক করুন</string>
+    <string name="search_hint">🔍  অ্যাপ খুঁজুন</string>
+    <string name="hero_on">🛡  সুরক্ষা চালু আছে</string>
+    <string name="hero_on_count">%1$d টি অ্যাপে দৈনিক সীমা সেট করা আছে</string>
+    <string name="hero_on_none">নিচের তালিকা থেকে অ্যাপ বেছে সীমা সেট করুন</string>
+    <string name="hero_off">⚠  সুরক্ষা বন্ধ আছে</string>
+    <string name="hero_off_sub">Accessibility চালু না করলে কোনো অ্যাপ লক হবে না</string>
+
+    <string name="setup_title">সেটআপ</string>
+    <string name="step1_title">১. Accessibility চালু করুন</string>
+    <string name="step1_desc">এটা ছাড়া লক কাজ করবে না</string>
+    <string name="step2_title">২. PIN সেট করুন</string>
+    <string name="step2_desc">৪–৮ অঙ্ক</string>
+    <string name="step3_title">৩. ব্যাটারি সীমাহীন করুন</string>
+    <string name="step3_desc">নইলে ফোন সার্ভিস বন্ধ করে দিতে পারে</string>
+    <string name="step4_title">৪. Usage Access (ঐচ্ছিক)</string>
+    <string name="step4_desc">আরও নির্ভুল হিসাবের জন্য</string>
+    <string name="restricted_help">Accessibility চালু করা না গেলে: অ্যাপ ইনফো → ⋮ (তিন ডট) → Restricted settings অনুমতি দিন, তারপর আবার চেষ্টা করুন।</string>
+    <string name="open_app_info">অ্যাপ ইনফো খুলুন</string>
+
+    <string name="list_title">অ্যাপের দৈনিক সীমা</string>
+    <string name="list_hint">যেকোনো অ্যাপে ট্যাপ করে সময়সীমা ঠিক করুন</string>
+    <string name="active_count">%1$d টি সক্রিয়</string>
+    <string name="settings_open_failed">এই সেটিংস খোলা যায়নি</string>
+
+    <string name="gate_sub">চালিয়ে যেতে PIN দিন</string>
+    <string name="need_pin_first">আগে একটি PIN সেট করুন</string>
+    <string name="pin_new_title">নতুন PIN দিন</string>
+    <string name="pin_new_sub">৪ থেকে ৮ অঙ্কের PIN বেছে নিন</string>
+    <string name="pin_again_title">আবার লিখুন</string>
+    <string name="pin_confirm_info">নিশ্চিত করতে একই PIN আবার দিন</string>
+    <string name="pin_mismatch">দুটি PIN মেলেনি, আবার চেষ্টা করুন</string>
+    <string name="pin_saved">PIN সেট হয়েছে</string>
+    <string name="pin_min_digits">কমপক্ষে %1$d অঙ্ক দিন</string>
+    <string name="pin_wrong">ভুল PIN</string>
+    <string name="pin_blocked">অনেকবার ভুল হয়েছে। %1$d সেকেন্ড পরে চেষ্টা করুন</string>
+
+    <string name="limit_label">দৈনিক সীমা (মিনিটে)</string>
+    <string name="limit_hint">যেমন 30  (0 = বন্ধ)</string>
+    <string name="preset_off">বন্ধ</string>
+    <string name="limit_set_toast">%1$s: দৈনিক %2$s সেট হয়েছে</string>
+    <string name="limit_off_toast">%1$s: সীমা বন্ধ করা হয়েছে</string>
+
+    <string name="row_no_limit">সীমা নেই</string>
+    <string name="row_set">সেট করুন</string>
+    <string name="row_used">আজ %1$s / %2$s</string>
+    <string name="row_used_free">আজ %1$s ব্যবহার • আজকের জন্য আনলকড</string>
+
+    <string name="lock_title">সময় শেষ!</string>
+    <string name="lock_sub">%1$s অ্যাপের আজকের সীমা (%2$s) শেষ হয়েছে।</string>
+    <string name="lock_pin_info">আরও সময় পেতে PIN দিন</string>
+    <string name="lock_no_pin">কোনো PIN সেট করা নেই। Universal App Locker খুলে একটি PIN সেট করুন।</string>
+    <string name="go_home">হোম স্ক্রিনে যান</string>
+    <string name="unlocked_title">আনলক হয়েছে</string>
+    <string name="unlocked_sub">%1$s কতক্ষণের জন্য খুলতে চান?</string>
+    <string name="plus_minutes">আরও %1$d মিনিট</string>
+    <string name="granted_toast">বাড়তি সময় দেওয়া হয়েছে</string>
+    <string name="unlock_today">আজকের জন্য সম্পূর্ণ আনলক</string>
+    <string name="unlock_today_toast">আজকের জন্য আনলক হয়েছে</string>
+    <string name="skip_home">বাদ দিন, হোমে যান</string>
+</resources>

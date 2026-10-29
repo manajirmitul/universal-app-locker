@@ -12,6 +12,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.text.Editable
 import android.text.InputType
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
@@ -74,6 +75,10 @@ class MainActivity : Activity() {
     }
 
     // ---------- জীবনচক্র ----------
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         store = Store(this)
@@ -155,7 +160,7 @@ class MainActivity : Activity() {
         val title = Ui.tv(this, "Universal App Locker", 22f, Ui.TEXT, true)
         title.gravity = Gravity.CENTER
         root.addView(title, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, t = 8))
-        val sub = Ui.tv(this, "চালিয়ে যেতে PIN দিন", 14f, Ui.SUB)
+        val sub = Ui.tv(this, getString(R.string.gate_sub), 14f, Ui.SUB)
         sub.gravity = Gravity.CENTER
         root.addView(sub, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, t = 4, b = 18))
 
@@ -166,7 +171,7 @@ class MainActivity : Activity() {
                 showMain()
             } else {
                 pad.clear()
-                pad.showError(Ui.pinFailMessage(store))
+                pad.showError(Ui.pinFailMessage(this, store))
             }
         }
         root.addView(pad)
@@ -181,14 +186,23 @@ class MainActivity : Activity() {
         Ui.applyInsets(root)
 
         val top = LinearLayout(this)
-        top.orientation = LinearLayout.VERTICAL
+        top.orientation = LinearLayout.HORIZONTAL
+        top.gravity = Gravity.CENTER_VERTICAL
         top.setPadding(dp(20), dp(16), dp(20), dp(8))
-        top.addView(Ui.tv(this, "Universal App Locker", 24f, Ui.TEXT, true))
-        top.addView(Ui.tv(this, "অ্যাপের দৈনিক ব্যবহারের সীমা ঠিক করুন", 13f, Ui.SUB))
+        val titles = LinearLayout(this)
+        titles.orientation = LinearLayout.VERTICAL
+        titles.addView(Ui.tv(this, "Universal App Locker", 22f, Ui.TEXT, true))
+        titles.addView(Ui.tv(this, getString(R.string.main_subtitle), 13f, Ui.SUB))
+        top.addView(titles, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        val langChip = Ui.tv(this, "🌐 " + getString(R.string.lang_code), 13f, Ui.TEXT, true)
+        langChip.setPadding(dp(12), dp(8), dp(12), dp(8))
+        langChip.background = Ui.ripple(this, Ui.rounded(this, Ui.CARD2, 14), 14)
+        langChip.setOnClickListener { showLanguageDialog() }
+        top.addView(langChip, lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, l = 10))
         root.addView(top)
 
         val search = EditText(this)
-        search.hint = "🔍  অ্যাপ খুঁজুন"
+        search.hint = getString(R.string.search_hint)
         search.setHintTextColor(Ui.SUB)
         search.setTextColor(Ui.TEXT)
         search.textSize = 15f
@@ -271,42 +285,42 @@ class MainActivity : Activity() {
         setup.orientation = LinearLayout.VERTICAL
         setup.background = Ui.rounded(this, Ui.CARD, 20)
         setup.setPadding(dp(18), dp(14), dp(18), dp(10))
-        setup.addView(Ui.tv(this, "সেটআপ", 15f, Ui.TEXT, true))
+        setup.addView(Ui.tv(this, getString(R.string.setup_title), 15f, Ui.TEXT, true))
 
         a11yMark = mark()
         pinMark = mark()
         batMark = mark()
         usageMark = mark()
-        pinBtn = Ui.btn(this, "সেট করুন", true, true) { showPinSetup() }
+        pinBtn = Ui.btn(this, getString(R.string.btn_set), true, true) { showPinSetup() }
 
         setup.addView(
             setupRow(
-                a11yMark, "১. Accessibility চালু করুন", "এটা ছাড়া লক কাজ করবে না",
-                Ui.btn(this, "খুলুন", true, true) { startSafe(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+                a11yMark, getString(R.string.step1_title), getString(R.string.step1_desc),
+                Ui.btn(this, getString(R.string.btn_open), true, true) {
+                    startSafe(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                }
             )
         )
-        setup.addView(setupRow(pinMark, "২. PIN সেট করুন", "৪–৮ অঙ্ক", pinBtn))
+        setup.addView(setupRow(pinMark, getString(R.string.step2_title), getString(R.string.step2_desc), pinBtn))
         setup.addView(
             setupRow(
-                batMark, "৩. ব্যাটারি সীমাহীন করুন", "নইলে ফোন সার্ভিস বন্ধ করে দিতে পারে",
-                Ui.btn(this, "খুলুন", true, true) { openBattery() }
+                batMark, getString(R.string.step3_title), getString(R.string.step3_desc),
+                Ui.btn(this, getString(R.string.btn_open), true, true) { openBattery() }
             )
         )
         setup.addView(
             setupRow(
-                usageMark, "৪. Usage Access (ঐচ্ছিক)", "আরও নির্ভুল হিসাবের জন্য",
-                Ui.btn(this, "খুলুন", true, true) { startSafe(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)) }
+                usageMark, getString(R.string.step4_title), getString(R.string.step4_desc),
+                Ui.btn(this, getString(R.string.btn_open), true, true) {
+                    startSafe(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                }
             )
         )
 
-        val help = Ui.tv(
-            this,
-            "Accessibility চালু করা না গেলে: অ্যাপ ইনফো → ⋮ (তিন ডট) → Restricted settings অনুমতি দিন, তারপর আবার চেষ্টা করুন।",
-            12f, Ui.SUB
-        )
+        val help = Ui.tv(this, getString(R.string.restricted_help), 12f, Ui.SUB)
         setup.addView(help, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, t = 6, b = 8))
         setup.addView(
-            Ui.btn(this, "অ্যাপ ইনফো খুলুন", false, true) {
+            Ui.btn(this, getString(R.string.open_app_info), false, true) {
                 startSafe(
                     Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName"))
                 )
@@ -320,14 +334,14 @@ class MainActivity : Activity() {
         titleRow.orientation = LinearLayout.HORIZONTAL
         titleRow.gravity = Gravity.CENTER_VERTICAL
         titleRow.addView(
-            Ui.tv(this, "অ্যাপের দৈনিক সীমা", 17f, Ui.TEXT, true),
+            Ui.tv(this, getString(R.string.list_title), 17f, Ui.TEXT, true),
             LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         )
         countText = Ui.tv(this, "", 12f, Ui.SUB)
         titleRow.addView(countText)
         box.addView(titleRow, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 4, 0, 4, 4))
         box.addView(
-            Ui.tv(this, "যেকোনো অ্যাপে ট্যাপ করে সময়সীমা ঠিক করুন", 12f, Ui.SUB),
+            Ui.tv(this, getString(R.string.list_hint), 12f, Ui.SUB),
             lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, l = 4, b = 4)
         )
         return box
@@ -339,30 +353,30 @@ class MainActivity : Activity() {
         val count = store.limitedCount()
         if (a11y) {
             heroCard.background = Ui.gradient(this, Ui.ACCENT_DARK, Ui.ACCENT, 22)
-            heroTitle.text = "🛡  সুরক্ষা চালু আছে"
+            heroTitle.text = getString(R.string.hero_on)
             heroSub.text = if (count > 0) {
-                "$count টি অ্যাপে দৈনিক সীমা সেট করা আছে"
+                getString(R.string.hero_on_count, count)
             } else {
-                "নিচের তালিকা থেকে অ্যাপ বেছে সীমা সেট করুন"
+                getString(R.string.hero_on_none)
             }
         } else {
             heroCard.background = Ui.gradient(this, Color.parseColor("#7F1D1D"), Color.parseColor("#DC2626"), 22)
-            heroTitle.text = "⚠  সুরক্ষা বন্ধ আছে"
-            heroSub.text = "Accessibility চালু না করলে কোনো অ্যাপ লক হবে না"
+            heroTitle.text = getString(R.string.hero_off)
+            heroSub.text = getString(R.string.hero_off_sub)
         }
         setMark(a11yMark, a11y)
         setMark(pinMark, store.hasPin())
         setMark(batMark, Sys.ignoringBattery(this))
         setMark(usageMark, Sys.hasUsageAccess(this))
-        pinBtn.text = if (store.hasPin()) "পরিবর্তন" else "সেট করুন"
-        countText.text = if (count > 0) "$count টি সক্রিয়" else ""
+        pinBtn.text = if (store.hasPin()) getString(R.string.btn_change) else getString(R.string.btn_set)
+        countText.text = if (count > 0) getString(R.string.active_count, count) else ""
     }
 
     private fun startSafe(i: Intent) {
         try {
             startActivity(i)
         } catch (e: Exception) {
-            Toast.makeText(this, "এই সেটিংস খোলা যায়নি", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.settings_open_failed), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -376,6 +390,42 @@ class MainActivity : Activity() {
         }
     }
 
+    // ---------- ভাষা বাছাই ----------
+    private fun showLanguageDialog() {
+        val box = LinearLayout(this)
+        box.orientation = LinearLayout.VERTICAL
+        box.background = Ui.rounded(this, Ui.CARD, 26)
+        box.setPadding(dp(20), dp(20), dp(20), dp(14))
+        box.addView(
+            Ui.tv(this, getString(R.string.lang_title), 19f, Ui.TEXT, true),
+            lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, b = 14)
+        )
+        val dialog = Ui.sheet(this, box)
+        val current = LocaleHelper.get(this)
+        val options = listOf(
+            Pair("auto", getString(R.string.lang_auto)),
+            Pair("en", "English"),
+            Pair("bn", "বাংলা")
+        )
+        for (o in options) {
+            val selected = o.first == current
+            val label = if (selected) "✓  " + o.second else o.second
+            val row = Ui.tv(this, label, 16f, if (selected) Color.WHITE else Ui.SUB, selected)
+            row.setPadding(dp(16), dp(14), dp(16), dp(14))
+            val bg = Ui.rounded(this, if (selected) Ui.ACCENT_DARK else Ui.CARD2, 14)
+            row.background = Ui.ripple(this, bg, 14)
+            row.setOnClickListener {
+                dialog.dismiss()
+                if (o.first != current) {
+                    LocaleHelper.set(this, o.first)
+                    recreate()
+                }
+            }
+            box.addView(row, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, b = 8))
+        }
+        dialog.show()
+    }
+
     // ---------- PIN সেট ----------
     private fun showPinSetup() {
         val box = LinearLayout(this)
@@ -384,10 +434,10 @@ class MainActivity : Activity() {
         box.background = Ui.rounded(this, Ui.CARD, 26)
         box.setPadding(dp(18), dp(22), dp(18), dp(18))
 
-        val title = Ui.tv(this, "নতুন PIN দিন", 19f, Ui.TEXT, true)
+        val title = Ui.tv(this, getString(R.string.pin_new_title), 19f, Ui.TEXT, true)
         title.gravity = Gravity.CENTER
         box.addView(title, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        val sub = Ui.tv(this, "৪ থেকে ৮ অঙ্কের PIN বেছে নিন", 13f, Ui.SUB)
+        val sub = Ui.tv(this, getString(R.string.pin_new_sub), 13f, Ui.SUB)
         sub.gravity = Gravity.CENTER
         box.addView(sub, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, t = 4, b = 14))
 
@@ -399,20 +449,20 @@ class MainActivity : Activity() {
             val f = first
             if (f == null) {
                 first = pin
-                title.text = "আবার লিখুন"
+                title.text = getString(R.string.pin_again_title)
                 pad.clear()
-                pad.showInfo("নিশ্চিত করতে একই PIN আবার দিন")
+                pad.showInfo(getString(R.string.pin_confirm_info))
             } else if (f == pin) {
                 store.setPin(pin)
                 authedUntil = System.currentTimeMillis() + 120_000L
                 dialog.dismiss()
-                Toast.makeText(this, "PIN সেট হয়েছে", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.pin_saved), Toast.LENGTH_SHORT).show()
                 refreshStatus()
             } else {
                 first = null
-                title.text = "নতুন PIN দিন"
+                title.text = getString(R.string.pin_new_title)
                 pad.clear()
-                pad.showError("দুটি PIN মেলেনি, আবার চেষ্টা করুন")
+                pad.showError(getString(R.string.pin_mismatch))
             }
         }
         dialog.show()
@@ -421,7 +471,7 @@ class MainActivity : Activity() {
     // ---------- সীমা ঠিক করার ডায়ালগ ----------
     private fun showLimitDialog(item: AppItem) {
         if (!store.hasPin()) {
-            Toast.makeText(this, "আগে একটি PIN সেট করুন", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.need_pin_first), Toast.LENGTH_LONG).show()
             showPinSetup()
             return
         }
@@ -446,14 +496,14 @@ class MainActivity : Activity() {
         box.addView(head)
 
         box.addView(
-            Ui.tv(this, "দৈনিক সীমা (মিনিটে)", 13f, Ui.SUB),
+            Ui.tv(this, getString(R.string.limit_label), 13f, Ui.SUB),
             lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, t = 16, b = 6)
         )
 
         val input = EditText(this)
         input.inputType = InputType.TYPE_CLASS_NUMBER
         input.setSingleLine(true)
-        input.hint = "যেমন 30  (0 = বন্ধ)"
+        input.hint = getString(R.string.limit_hint)
         input.setHintTextColor(Ui.SUB)
         input.setTextColor(Ui.TEXT)
         input.textSize = 20f
@@ -464,8 +514,12 @@ class MainActivity : Activity() {
         box.addView(input, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, b = 10))
 
         val presets = listOf(
-            Pair("বন্ধ", 0), Pair("15 মি", 15), Pair("30 মি", 30),
-            Pair("1 ঘ", 60), Pair("2 ঘ", 120), Pair("3 ঘ", 180)
+            Pair(getString(R.string.preset_off), 0),
+            Pair(Ui.fmtMin(this, 15L), 15),
+            Pair(Ui.fmtMin(this, 30L), 30),
+            Pair(Ui.fmtMin(this, 60L), 60),
+            Pair(Ui.fmtMin(this, 120L), 120),
+            Pair(Ui.fmtMin(this, 180L), 180)
         )
         val chips = LinearLayout(this)
         chips.orientation = LinearLayout.HORIZONTAL
@@ -488,27 +542,27 @@ class MainActivity : Activity() {
         val buttons = LinearLayout(this)
         buttons.orientation = LinearLayout.HORIZONTAL
         buttons.addView(
-            Ui.btn(this, "বাতিল", false) { dialog.dismiss() },
+            Ui.btn(this, getString(R.string.btn_cancel), false) { dialog.dismiss() },
             LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         )
+        val saveLp = lp(0, ViewGroup.LayoutParams.WRAP_CONTENT, l = 10)
+        saveLp.weight = 1f
         buttons.addView(
-            Ui.btn(this, "সংরক্ষণ", true) {
+            Ui.btn(this, getString(R.string.btn_save), true) {
                 val mins = (input.text.toString().trim().toIntOrNull() ?: 0).coerceIn(0, 1440)
                 store.setLimit(item.pkg, mins)
                 dialog.dismiss()
                 val msg = if (mins > 0) {
-                    "${item.label}: দৈনিক ${Ui.fmtMin(mins.toLong())} সেট হয়েছে"
+                    getString(R.string.limit_set_toast, item.label, Ui.fmtMin(this, mins.toLong()))
                 } else {
-                    "${item.label}: সীমা বন্ধ করা হয়েছে"
+                    getString(R.string.limit_off_toast, item.label)
                 }
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
                 applyFilter()
                 refreshStatus()
             },
-            lp(0, ViewGroup.LayoutParams.WRAP_CONTENT, l = 10)
+            saveLp
         )
-        // দ্বিতীয় বাটনের weight ঠিক করা
-        (buttons.getChildAt(1).layoutParams as LinearLayout.LayoutParams).weight = 1f
         box.addView(buttons)
         dialog.show()
     }
@@ -548,9 +602,9 @@ class MainActivity : Activity() {
             val col = LinearLayout(ctx)
             col.orientation = LinearLayout.VERTICAL
             name.setSingleLine(true)
-            name.ellipsize = android.text.TextUtils.TruncateAt.END
+            name.ellipsize = TextUtils.TruncateAt.END
             sub.setSingleLine(true)
-            sub.ellipsize = android.text.TextUtils.TruncateAt.END
+            sub.ellipsize = TextUtils.TruncateAt.END
             col.addView(name)
             col.addView(sub)
             bar.orientation = LinearLayout.HORIZONTAL
@@ -576,10 +630,10 @@ class MainActivity : Activity() {
             name.text = item.label
             val limit = store.getLimit(item.pkg)
             if (limit <= 0) {
-                sub.text = "সীমা নেই"
+                sub.text = getString(R.string.row_no_limit)
                 sub.setTextColor(Ui.SUB)
                 bar.visibility = View.GONE
-                chip.text = "সেট করুন"
+                chip.text = getString(R.string.row_set)
                 chip.setTextColor(Ui.SUB)
                 chip.background = Ui.rounded(context, Ui.CARD2, 14)
                 return
@@ -595,16 +649,16 @@ class MainActivity : Activity() {
                 else -> Ui.ACCENT
             }
             sub.text = if (free) {
-                "আজ ${Ui.fmtMin(used / 60)} ব্যবহার • আজকের জন্য আনলকড"
+                getString(R.string.row_used_free, Ui.fmtMin(context, used / 60))
             } else {
-                "আজ ${Ui.fmtMin(used / 60)} / ${Ui.fmtMin(total / 60)}"
+                getString(R.string.row_used, Ui.fmtMin(context, used / 60), Ui.fmtMin(context, total / 60))
             }
             sub.setTextColor(if (pct >= 100 && !free) Ui.BAD else Ui.SUB)
             bar.visibility = View.VISIBLE
             fill.background = Ui.rounded(context, color, 3)
             fill.layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, pct.toFloat())
             rest.layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, (100 - pct).toFloat())
-            chip.text = Ui.fmtMin(limit.toLong())
+            chip.text = Ui.fmtMin(context, limit.toLong())
             chip.setTextColor(Color.WHITE)
             chip.background = Ui.rounded(context, Ui.ACCENT_DARK, 14)
         }
