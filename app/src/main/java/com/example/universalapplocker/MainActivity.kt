@@ -87,6 +87,12 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        if (!LocaleHelper.isChosen(this)) {
+            showingMain = false
+            handler.removeCallbacksAndMessages(null)
+            setContentView(buildWelcome())
+            return
+        }
         val needAuth = store.hasPin() && System.currentTimeMillis() > authedUntil
         if (needAuth) {
             showingMain = false
@@ -143,6 +149,45 @@ class MainActivity : Activity() {
                 .thenBy { it.label.lowercase(Locale.getDefault()) }
         )
         if (::adapter.isInitialized) adapter.notifyDataSetChanged()
+    }
+
+    // ---------- প্রথমবার ভাষা বাছাই ----------
+    private fun buildWelcome(): View {
+        val root = LinearLayout(this)
+        root.orientation = LinearLayout.VERTICAL
+        root.gravity = Gravity.CENTER
+        root.setBackgroundColor(Ui.BG)
+        Ui.applyInsets(root)
+
+        val inner = LinearLayout(this)
+        inner.orientation = LinearLayout.VERTICAL
+        inner.gravity = Gravity.CENTER_HORIZONTAL
+        inner.setPadding(dp(24), dp(24), dp(24), dp(24))
+
+        val globe = Ui.tv(this, "🌐", 48f)
+        globe.gravity = Gravity.CENTER
+        inner.addView(globe)
+        val t1 = Ui.tv(this, "Choose your language", 22f, Ui.TEXT, true)
+        t1.gravity = Gravity.CENTER
+        inner.addView(t1, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, t = 12))
+        val t2 = Ui.tv(this, "ভাষা বেছে নিন", 20f, Ui.TEXT, true)
+        t2.gravity = Gravity.CENTER
+        inner.addView(t2, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, t = 4, b = 24))
+
+        val options = listOf(Pair("en", "English"), Pair("bn", "বাংলা"))
+        for (o in options) {
+            val b = Ui.btn(this, o.second, true) { chooseLanguage(o.first) }
+            inner.addView(b, lp(dp(280), ViewGroup.LayoutParams.WRAP_CONTENT, b = 12))
+        }
+        val auto = Ui.btn(this, "Phone language / ফোনের ভাষা", false, true) { chooseLanguage("auto") }
+        inner.addView(auto, lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, t = 4))
+        root.addView(inner)
+        return root
+    }
+
+    private fun chooseLanguage(code: String) {
+        LocaleHelper.set(this, code)
+        recreate()
     }
 
     // ---------- PIN গেট ----------

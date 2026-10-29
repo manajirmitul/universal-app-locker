@@ -13,6 +13,11 @@ object LocaleHelper {
             .getString(KEY, "auto") ?: "auto"
     }
 
+    /** ব্যবহারকারী আগে কখনো ভাষা বেছে নিয়েছে কিনা। */
+    fun isChosen(ctx: Context): Boolean {
+        return ctx.getSharedPreferences("locker", Context.MODE_PRIVATE).contains(KEY)
+    }
+
     fun set(ctx: Context, code: String) {
         ctx.getSharedPreferences("locker", Context.MODE_PRIVATE)
             .edit().putString(KEY, code).apply()
