@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,6 +25,7 @@ import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import java.util.Locale
@@ -132,6 +134,7 @@ class MainActivity : Activity() {
         adapter.notifyDataSetChanged()
         handler.removeCallbacksAndMessages(null)
         handler.postDelayed(refresher, 5000L)
+        handler.postDelayed({ if (showingMain) refreshStatus() }, 1500L)
     }
 
     // ---------- অ্যাপের তালিকা ----------
@@ -387,6 +390,10 @@ class MainActivity : Activity() {
             },
             lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, b = 6)
         )
+        setup.addView(
+            Ui.btn(this, getString(R.string.tips_button), false, true) { showTipsDialog() },
+            lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, b = 6)
+        )
         box.addView(setup, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, b = 16))
 
         // তালিকার শিরোনাম
@@ -411,7 +418,12 @@ class MainActivity : Activity() {
         if (mainRoot == null) return
         val a11y = Sys.isA11yEnabled(this)
         val count = store.limitedCount()
-        if (a11y) {
+        val running = AppMonitorService.running
+        if (a11y && !running) {
+            heroCard.background = Ui.gradient(this, Color.parseColor("#B45309"), Color.parseColor("#F59E0B"), 22)
+            heroTitle.text = getString(R.string.hero_stalled)
+            heroSub.text = getString(R.string.hero_stalled_sub)
+        } else if (a11y) {
             heroCard.background = Ui.gradient(this, Ui.ACCENT_DARK, Ui.ACCENT, 22)
             heroTitle.text = getString(R.string.hero_on)
             heroSub.text = if (count > 0) {
@@ -424,7 +436,7 @@ class MainActivity : Activity() {
             heroTitle.text = getString(R.string.hero_off)
             heroSub.text = getString(R.string.hero_off_sub)
         }
-        setMark(a11yMark, a11y)
+        setMark(a11yMark, a11y && running)
         setMark(pinMark, store.hasPin())
         setMark(batMark, Sys.ignoringBattery(this))
         setMark(usageMark, Sys.hasUsageAccess(this))
@@ -448,6 +460,34 @@ class MainActivity : Activity() {
         } catch (e: Exception) {
             startSafe(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
         }
+    }
+
+    // ---------- ফোন অনুযায়ী টিপস ----------
+    private fun showTipsDialog() {
+        val box = LinearLayout(this)
+        box.orientation = LinearLayout.VERTICAL
+        box.background = Ui.rounded(this, Ui.CARD, 26)
+        box.setPadding(dp(20), dp(20), dp(20), dp(16))
+        box.addView(
+            Ui.tv(this, getString(R.string.tips_title, Build.MANUFACTURER), 18f, Ui.TEXT, true),
+            lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, b = 12)
+        )
+        val inner = LinearLayout(this)
+        inner.orientation = LinearLayout.VERTICAL
+        inner.addView(Ui.tv(this, getString(OemHelper.tipsRes()), 14f, Ui.TEXT))
+        inner.addView(
+            Ui.tv(this, getString(R.string.tips_note), 12f, Ui.SUB),
+            lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, t = 12)
+        )
+        val sv = ScrollView(this)
+        sv.addView(inner)
+        box.addView(sv, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(300)))
+        val dialog = Ui.sheet(this, box)
+        box.addView(
+            Ui.btn(this, getString(R.string.btn_close), true) { dialog.dismiss() },
+            lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, t = 14)
+        )
+        dialog.show()
     }
 
     // ---------- PIN সেট ----------

@@ -38,6 +38,17 @@ Go to the **[Releases](../../releases/latest)** page and download the latest `Un
 - Dark and light theme, app search, progress bars
 - **Languages:** English and বাংলা, choose it on first launch, change it anytime in Settings (⚙), or follow the phone language. To add a language, copy `app/src/main/res/values/strings.xml` to `values-xx/strings.xml`, translate it, and add the language to the list in `SettingsActivity` (and `MainActivity.buildWelcome()`)
 
+## Troubleshooting (works on all brands, but some need extra settings)
+
+Some phone makers (Xiaomi/Redmi/POCO, Oppo/Realme/OnePlus, Vivo/iQOO, Huawei/Honor, Samsung, Tecno/Infinix/itel) stop background apps aggressively. If locking does not work:
+
+1. Turn **Accessibility** off and on again. Turn on **Allow restricted settings** first if Android blocks it.
+2. Set battery to **Unrestricted** and turn **Autostart / Auto launch** ON for this app.
+3. Lock the app card in the **recent apps** screen so it is not cleared.
+4. In the app tap **Tips for your phone brand** for exact menu names. The home screen also shows a warning when the service is not running.
+
+Requires Android 8.0 or newer.
+
 ## Limitations
 
 This is a self-control tool, not a tamper-proof parental control. Someone who knows the phone's settings can turn off the Accessibility service or uninstall the app.

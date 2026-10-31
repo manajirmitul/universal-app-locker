@@ -85,4 +85,18 @@
     <string name="about_title">About</string>
     <string name="about_version">Version %1$s</string>
     <string name="about_text">Free and open source (MIT). No internet permission, no ads, no tracking.</string>
+
+    <string name="hero_stalled">⚠  Service is not running</string>
+    <string name="hero_stalled_sub">Turn Accessibility off and on again, and allow auto-start and unrestricted battery (see phone tips below)</string>
+    <string name="tips_button">Tips for your phone brand</string>
+    <string name="tips_title">Tips for %1$s phones</string>
+    <string name="tips_note">Menu names can differ slightly depending on your phone version.</string>
+    <string name="btn_close">Close</string>
+    <string name="tips_generic">1. Set battery to Unrestricted (see step 3 above).\n2. If your phone has Autostart or Auto launch, turn it ON for this app.\n3. Open the recent apps screen and lock this app so it is not cleared.\n4. If locking stops working, turn Accessibility off and on again.</string>
+    <string name="tips_xiaomi">1. Settings → Apps → Manage apps → Universal App Locker → Autostart: ON.\n2. Same page → Battery saver → No restrictions.\n3. Open recent apps, long-press this app card and tap the lock icon.\n4. If locking stops working, turn Accessibility off and on again.</string>
+    <string name="tips_oppo">1. Settings → Apps → App management → Universal App Locker → Battery usage → turn ON Allow background activity and Allow auto launch.\n2. Battery → set to Unrestricted.\n3. Open recent apps and lock this app card.\n4. If locking stops working, turn Accessibility off and on again.</string>
+    <string name="tips_vivo">1. Settings → Battery → Background power consumption management → Universal App Locker → Allow high background power consumption.\n2. Settings → Apps → Autostart → turn ON for this app.\n3. Open recent apps and lock this app card.\n4. If locking stops working, turn Accessibility off and on again.</string>
+    <string name="tips_samsung">1. Settings → Battery → Background usage limits → Never sleeping apps → add Universal App Locker.\n2. Turn OFF Put unused apps to sleep.\n3. Settings → Apps → Universal App Locker → Battery → Unrestricted.\n4. If locking stops working, turn Accessibility off and on again.</string>
+    <string name="tips_huawei">1. Settings → Battery → App launch → Universal App Locker → Manage manually.\n2. Turn ON Auto-launch, Secondary launch and Run in background.\n3. Open recent apps and lock this app card.\n4. If locking stops working, turn Accessibility off and on again.</string>
+    <string name="tips_transsion">1. Settings (or Phone Master) → Autostart manager → turn ON for Universal App Locker.\n2. Battery → App battery management → No restrictions for this app.\n3. Open recent apps and lock this app card.\n4. If locking stops working, turn Accessibility off and on again.</string>
 </resources>
