@@ -44,6 +44,8 @@ class MainActivity : Activity() {
     private var query = ""
     private var mainRoot: View? = null
     private var showingMain = false
+    private var createdLang = ""
+    private var createdTheme = ""
     private lateinit var adapter: AppAdapter
 
     private lateinit var heroCard: LinearLayout
@@ -81,23 +83,30 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Ui.applyTheme(this)
+        createdLang = LocaleHelper.get(this)
+        createdTheme = Ui.themeMode(this)
         store = Store(this)
         loadAppsAsync()
     }
 
     override fun onResume() {
         super.onResume()
+        if (LocaleHelper.get(this) != createdLang || Ui.themeMode(this) != createdTheme) {
+            recreate()
+            return
+        }
         if (!LocaleHelper.isChosen(this)) {
             showingMain = false
             handler.removeCallbacksAndMessages(null)
-            setContentView(buildWelcome())
+            display(buildWelcome())
             return
         }
         val needAuth = store.hasPin() && System.currentTimeMillis() > authedUntil
         if (needAuth) {
             showingMain = false
             handler.removeCallbacksAndMessages(null)
-            setContentView(buildGate())
+            display(buildGate())
         } else {
             showMain()
         }
@@ -109,11 +118,16 @@ class MainActivity : Activity() {
         super.onPause()
     }
 
+    private fun display(v: View) {
+        setContentView(v)
+        Ui.styleWindow(this)
+    }
+
     private fun showMain() {
         showingMain = true
         if (mainRoot == null) mainRoot = buildMain()
         val root = mainRoot!!
-        if (root.parent == null) setContentView(root)
+        if (root.parent == null) display(root)
         refreshStatus()
         adapter.notifyDataSetChanged()
         handler.removeCallbacksAndMessages(null)
@@ -239,11 +253,12 @@ class MainActivity : Activity() {
         titles.addView(Ui.tv(this, "Universal App Locker", 22f, Ui.TEXT, true))
         titles.addView(Ui.tv(this, getString(R.string.main_subtitle), 13f, Ui.SUB))
         top.addView(titles, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-        val langChip = Ui.tv(this, "🌐 " + getString(R.string.lang_code), 13f, Ui.TEXT, true)
-        langChip.setPadding(dp(12), dp(8), dp(12), dp(8))
-        langChip.background = Ui.ripple(this, Ui.rounded(this, Ui.CARD2, 14), 14)
-        langChip.setOnClickListener { showLanguageDialog() }
-        top.addView(langChip, lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, l = 10))
+        val gear = Ui.tv(this, "⚙", 22f, Ui.TEXT, true)
+        gear.gravity = Gravity.CENTER
+        gear.setPadding(dp(12), dp(6), dp(12), dp(6))
+        gear.background = Ui.ripple(this, Ui.rounded(this, Ui.CARD2, 14), 14)
+        gear.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
+        top.addView(gear, lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, l = 10))
         root.addView(top)
 
         val search = EditText(this)
@@ -433,42 +448,6 @@ class MainActivity : Activity() {
         } catch (e: Exception) {
             startSafe(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
         }
-    }
-
-    // ---------- ভাষা বাছাই ----------
-    private fun showLanguageDialog() {
-        val box = LinearLayout(this)
-        box.orientation = LinearLayout.VERTICAL
-        box.background = Ui.rounded(this, Ui.CARD, 26)
-        box.setPadding(dp(20), dp(20), dp(20), dp(14))
-        box.addView(
-            Ui.tv(this, getString(R.string.lang_title), 19f, Ui.TEXT, true),
-            lp(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, b = 14)
-        )
-        val dialog = Ui.sheet(this, box)
-        val current = LocaleHelper.get(this)
-        val options = listOf(
-            Pair("auto", getString(R.string.lang_auto)),
-            Pair("en", "English"),
-            Pair("bn", "বাংলা")
-        )
-        for (o in options) {
-            val selected = o.first == current
-            val label = if (selected) "✓  " + o.second else o.second
-            val row = Ui.tv(this, label, 16f, if (selected) Color.WHITE else Ui.SUB, selected)
-            row.setPadding(dp(16), dp(14), dp(16), dp(14))
-            val bg = Ui.rounded(this, if (selected) Ui.ACCENT_DARK else Ui.CARD2, 14)
-            row.background = Ui.ripple(this, bg, 14)
-            row.setOnClickListener {
-                dialog.dismiss()
-                if (o.first != current) {
-                    LocaleHelper.set(this, o.first)
-                    recreate()
-                }
-            }
-            box.addView(row, lp(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, b = 8))
-        }
-        dialog.show()
     }
 
     // ---------- PIN সেট ----------

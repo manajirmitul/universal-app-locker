@@ -76,4 +76,13 @@
     <string name="unlock_today">আজকের জন্য সম্পূর্ণ আনলক</string>
     <string name="unlock_today_toast">আজকের জন্য আনলক হয়েছে</string>
     <string name="skip_home">বাদ দিন, হোমে যান</string>
+
+    <string name="settings_title">সেটিংস</string>
+    <string name="theme_title">থিম</string>
+    <string name="theme_system">ফোনের মতো</string>
+    <string name="theme_dark">ডার্ক</string>
+    <string name="theme_light">লাইট</string>
+    <string name="about_title">সম্পর্কে</string>
+    <string name="about_version">ভার্সন %1$s</string>
+    <string name="about_text">ফ্রি ও ওপেন সোর্স (MIT)। কোনো ইন্টারনেট অনুমতি, বিজ্ঞাপন বা ট্র্যাকিং নেই।</string>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
@@ -16,21 +17,90 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.TextView
 
 /** ছোট ছোট UI সহায়ক ফাংশন ও রঙ। */
 object Ui {
-    val BG: Int = Color.parseColor("#0E1015")
-    val CARD: Int = Color.parseColor("#181B22")
-    val CARD2: Int = Color.parseColor("#232733")
-    val ACCENT: Int = Color.parseColor("#7C6CFF")
-    val ACCENT_DARK: Int = Color.parseColor("#5A49E8")
-    val OK: Int = Color.parseColor("#34D399")
-    val WARN: Int = Color.parseColor("#FBBF24")
-    val BAD: Int = Color.parseColor("#F87171")
-    val TEXT: Int = Color.parseColor("#F1F3F8")
-    val SUB: Int = Color.parseColor("#98A2B3")
-    val LINE: Int = Color.parseColor("#2A2F3B")
+    var isDark: Boolean = true
+    var BG: Int = Color.parseColor("#0E1015")
+    var CARD: Int = Color.parseColor("#181B22")
+    var CARD2: Int = Color.parseColor("#232733")
+    var ACCENT: Int = Color.parseColor("#7C6CFF")
+    var ACCENT_DARK: Int = Color.parseColor("#5A49E8")
+    var OK: Int = Color.parseColor("#34D399")
+    var WARN: Int = Color.parseColor("#FBBF24")
+    var BAD: Int = Color.parseColor("#F87171")
+    var TEXT: Int = Color.parseColor("#F1F3F8")
+    var SUB: Int = Color.parseColor("#98A2B3")
+    var LINE: Int = Color.parseColor("#2A2F3B")
+    var RIPPLE: Int = Color.parseColor("#33FFFFFF")
+
+    fun themeMode(ctx: Context): String {
+        return ctx.getSharedPreferences("locker", Context.MODE_PRIVATE)
+            .getString("theme", "dark") ?: "dark"
+    }
+
+    fun setThemeMode(ctx: Context, mode: String) {
+        ctx.getSharedPreferences("locker", Context.MODE_PRIVATE)
+            .edit().putString("theme", mode).apply()
+    }
+
+    /** বেছে নেওয়া থিম অনুযায়ী রঙ ঠিক করে। প্রতিটি স্ক্রিন বানানোর আগে ডাকতে হয়। */
+    fun applyTheme(ctx: Context) {
+        val mode = themeMode(ctx)
+        val systemDark = (ctx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+            Configuration.UI_MODE_NIGHT_YES
+        isDark = when (mode) {
+            "light" -> false
+            "system" -> systemDark
+            else -> true
+        }
+        if (isDark) {
+            BG = Color.parseColor("#0E1015")
+            CARD = Color.parseColor("#181B22")
+            CARD2 = Color.parseColor("#232733")
+            OK = Color.parseColor("#34D399")
+            WARN = Color.parseColor("#FBBF24")
+            BAD = Color.parseColor("#F87171")
+            TEXT = Color.parseColor("#F1F3F8")
+            SUB = Color.parseColor("#98A2B3")
+            LINE = Color.parseColor("#2A2F3B")
+            RIPPLE = Color.parseColor("#33FFFFFF")
+        } else {
+            BG = Color.parseColor("#F4F5F9")
+            CARD = Color.parseColor("#FFFFFF")
+            CARD2 = Color.parseColor("#E9ECF3")
+            OK = Color.parseColor("#10B981")
+            WARN = Color.parseColor("#F59E0B")
+            BAD = Color.parseColor("#DC2626")
+            TEXT = Color.parseColor("#14161C")
+            SUB = Color.parseColor("#5B6475")
+            LINE = Color.parseColor("#D6DAE4")
+            RIPPLE = Color.parseColor("#22000000")
+        }
+    }
+
+    /** স্ট্যাটাস/নেভিগেশন বারের রঙ ও আইকনের রঙ থিমের সাথে মেলায়। setContentView এর পরে ডাকতে হয়। */
+    fun styleWindow(a: Activity) {
+        val w = a.window
+        w.setBackgroundDrawable(ColorDrawable(BG))
+        w.statusBarColor = BG
+        w.navigationBarColor = BG
+        if (Build.VERSION.SDK_INT >= 30) {
+            val c = w.insetsController
+            if (c != null) {
+                val mask = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS or
+                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                c.setSystemBarsAppearance(if (isDark) 0 else mask, mask)
+            }
+        } else {
+            var flags = w.decorView.systemUiVisibility
+            val light = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            flags = if (isDark) flags and light.inv() else flags or light
+            w.decorView.systemUiVisibility = flags
+        }
+    }
 
     fun dp(ctx: Context, v: Int): Int =
         (v * ctx.resources.displayMetrics.density + 0.5f).toInt()
@@ -56,7 +126,7 @@ object Ui {
     fun ripple(ctx: Context, content: Drawable, radiusDp: Int): Drawable {
         val mask = rounded(ctx, Color.WHITE, radiusDp)
         return RippleDrawable(
-            ColorStateList.valueOf(Color.parseColor("#33FFFFFF")), content, mask
+            ColorStateList.valueOf(RIPPLE), content, mask
         )
     }
 

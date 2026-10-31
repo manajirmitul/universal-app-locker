@@ -26,6 +26,7 @@ Go to the **[Releases](../../releases/latest)** page and download the latest `Un
 2. Set a **PIN** (4 to 8 digits).
 3. Set **Battery → Unrestricted** (important on Oppo, Xiaomi, Vivo, Realme, Samsung, otherwise the phone may stop the service).
 4. Tap any app in the list and choose a daily limit.
+5. Open Settings (⚙, top right) to change the language or switch between dark and light theme.
 
 ## Features
 
@@ -34,8 +35,8 @@ Go to the **[Releases](../../releases/latest)** page and download the latest `Un
 - The app itself is PIN-protected (limits can't be changed without the PIN)
 - PIN is stored as a salted SHA-256 hash; 5 wrong tries = 30 s cooldown
 - Optional **Usage Access** makes counting more accurate by including usage before the service started
-- Dark UI, app search, progress bars
-- **Languages:** English and বাংলা, switch anytime with the 🌐 button (or follow the phone language). To add a language, copy `app/src/main/res/values/strings.xml` to `values-xx/strings.xml`, translate it, and add the language to the list in `MainActivity.showLanguageDialog()`
+- Dark and light theme, app search, progress bars
+- **Languages:** English and বাংলা, choose it on first launch, change it anytime in Settings (⚙), or follow the phone language. To add a language, copy `app/src/main/res/values/strings.xml` to `values-xx/strings.xml`, translate it, and add the language to the list in `SettingsActivity` (and `MainActivity.buildWelcome()`)
 
 ## Limitations
 

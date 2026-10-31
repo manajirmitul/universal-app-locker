@@ -28,6 +28,7 @@ class LockActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Ui.applyTheme(this)
         store = Store(this)
         pkg = intent.getStringExtra("locked_package") ?: ""
         showPin()
@@ -146,7 +147,7 @@ class LockActivity : Activity() {
             }
             content.addView(pad)
         } else {
-            val note = Ui.tv(this, getString(R.string.lock_no_pin), 14f, Ui.WARN)
+            val note = Ui.tv(this, getString(R.string.lock_no_pin), 14f, Ui.TEXT)
             note.gravity = Gravity.CENTER
             content.addView(note)
         }
@@ -157,6 +158,7 @@ class LockActivity : Activity() {
         content.addView(home, hlp)
 
         setContentView(frame(content))
+        Ui.styleWindow(this)
     }
 
     private fun showOptions() {
@@ -196,5 +198,6 @@ class LockActivity : Activity() {
         content.addView(home, hlp)
 
         setContentView(frame(content))
+        Ui.styleWindow(this)
     }
 }
